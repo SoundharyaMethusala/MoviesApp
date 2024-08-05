@@ -4,18 +4,33 @@ import Movies from './Components/Movies'
 import Banner from './Components/Banner'
 import Watchlist from './Components/Watchlist'
 import { useState,useEffect } from 'react'
+import MovieContext from './Context/MovieContext'
+import PaginationContext from './Context/PaginationContext'
+
 
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
+import MovieDetail from './Components/MovieDetail'
 
 function App() {
 
   const [watchlist,setWatchList]=useState(JSON.parse(localStorage.getItem("watchlist")) || []);
-
+  const [pageno,setPageno]=useState(1);
     const addTowatchlist=(movietoadd)=>{
         const newwatchlist=[...watchlist,movietoadd];
         setWatchList(newwatchlist);
         //console.log(newwatchlist);
     }
+
+    const handlenext=()=>{
+      setPageno(pageno+1);
+  }
+
+  const handleprev=()=>{
+      if(pageno>1){
+          setPageno(pageno-1);
+      }
+  }
+
 
     const removeFromwatchlist=(movietoremove)=>{
         const filteredwatchlist=watchlist.filter((movieobj)=>{
@@ -33,19 +48,28 @@ function App() {
   return (
     <BrowserRouter>
     <Navbar/>
-      <Routes>
+    <MovieContext.Provider value={{watchlist,addTowatchlist,removeFromwatchlist}}>
+    <Routes>
         <Route path="/" element={
           <>
           <Banner/>
-          <Movies watchlist={watchlist} addTowatchlist={addTowatchlist} removeFromwatchlist={removeFromwatchlist}/>
+          <PaginationContext.Provider value={{pageno,handlenext,handleprev}}>
+            <Movies/>
+          </PaginationContext.Provider>
           </>
         }/>
         <Route path="/Watchlist" element={
           <>
-            <Watchlist movies={watchlist} removeFromwatchlist={removeFromwatchlist} setWatchList={setWatchList}/>
+            <Watchlist/>
+          </>
+        }/>
+        <Route path="/movie/:id" element={
+          <>
+            <MovieDetail/>
           </>
         }/>
       </Routes>
+    </MovieContext.Provider>
     </BrowserRouter>
   )
 }

@@ -1,7 +1,12 @@
 import { BASE_URL, GENRE_ID_MAPPING,ALL_GENRES } from "../utils/constants";
 import { useState,useEffect } from "react";
+import MovieContext from "../Context/MovieContext";
+import { useContext } from "react";
 
-export default function Watchlist({movies,removeFromwatchlist,setWatchList}){
+export default function Watchlist(){
+
+    const {watchlist:movies,removeFromwatchlist,addTowatchlist} = useContext(MovieContext)
+
     const [genres,setGenres]=useState([ALL_GENRES]);
     const [selectedGenre,setSelectedGenre]=useState([ALL_GENRES]);
     const [search,setSearch] = useState("");
@@ -31,7 +36,7 @@ export default function Watchlist({movies,removeFromwatchlist,setWatchList}){
     return(
         <div className="flex flex-col items-center justify-center">
 
-        <div className="flex w-[90%] my-8 justify-evenly">
+        <div className="flex flex-wrap gap-4 w-[90%] my-8 justify-evenly">
             {
                 genres.map((genre,index)=>{
                     return <div key={index} 
