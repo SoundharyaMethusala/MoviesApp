@@ -14,9 +14,17 @@ export default function Movies(){
     const {pageno} = useContext(PaginationContext)
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=48cc502104e3a8214004e2d847b4ea0b&page=${pageno}`).then(function(res){
-            setMovies(res.data.results)
-        });
+        const fetchmovies=async()=>{
+            try{
+                const movie=await axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=48cc502104e3a8214004e2d847b4ea0b&page=${pageno}`)
+                setMovies(movie.data.results)
+            }
+            catch(error){
+                console.log("Error fetching trending movies",error);
+            }
+        }
+        fetchmovies();
+        
     },[pageno]);
 
     if(!movies){

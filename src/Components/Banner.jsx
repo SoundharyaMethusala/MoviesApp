@@ -6,11 +6,17 @@ export default function Banner(){
     const [trendingmovie,setTrendingMovie]=useState(null);
 
     useEffect(()=>{
-        axios.get('https://api.themoviedb.org/3/trending/movie/day?api_key=48cc502104e3a8214004e2d847b4ea0b')
-        .then(function(res){
-        let randommovie=res.data.results[Math.floor(Math.random()*20)];
-        setTrendingMovie(randommovie);
-    });
+        const fetchbannermovie=async()=>{
+        try{
+        const bannermovie=await axios.get('https://api.themoviedb.org/3/trending/movie/day?api_key=48cc502104e3a8214004e2d847b4ea0b')
+        let randommovie=bannermovie.data.results[Math.floor(Math.random()*20)];
+        setTrendingMovie(randommovie)
+        }
+        catch(error){
+            console.log("Error fetching banner movie",error);
+        }
+        }
+        fetchbannermovie();
     },[]);
 
     if(!trendingmovie){

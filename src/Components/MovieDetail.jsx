@@ -11,24 +11,27 @@ export default function MovieDetail(){
     const[cast,setCast]=useState([]);
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=48cc502104e3a8214004e2d847b4ea0b`)
-        .then(function(res){
-            setMoviedetails(res.data)
-            return axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=48cc502104e3a8214004e2d847b4ea0b`)
-        }).then(function(res){
-            const videos=res.data.results;
-            const trailer = videos.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-            if (trailer) {
-            setYoutubeKey(trailer.key);
-            }
-            return axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=48cc502104e3a8214004e2d847b4ea0b`)
-            .then(function(res){
-                const cast=res.data.cast;
+        const fetchmoviedetails=async()=>{
+            try{
+                const movieres=await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=48cc502104e3a8214004e2d847b4ea0b`)
+                setMoviedetails(movieres.data);
+                const videores=await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=48cc502104e3a8214004e2d847b4ea0b`)
+                const videos=videores.data.results;
+                const trailer = videos.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                if (trailer) {
+                setYoutubeKey(trailer.key);
+                }
+                const creditsres=await axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=48cc502104e3a8214004e2d847b4ea0b`)
+                const cast=creditsres.data.cast;
                 if(cast){
                     setCast(cast);
                 }
-            })
-        })
+            }
+            catch(error){
+                console.log("Error fetching movie details",error);
+            }
+        }
+        fetchmoviedetails();
     },[id])
 
     if(!moviedetails){

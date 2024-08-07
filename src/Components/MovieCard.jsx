@@ -9,10 +9,16 @@ export default function MovieCard({movie,fav,title,poster}){
     const {removeFromwatchlist,addTowatchlist} = useContext(MovieContext)
 
     useEffect(()=>{
-        axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=48cc502104e3a8214004e2d847b4ea0b`)
-        .then(function(res){
-            setDetails(res.data);
-        })
+        const fetchmoviedetails=async ()=>{
+            try{
+                const res=await axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=48cc502104e3a8214004e2d847b4ea0b`)
+                setDetails(res.data);
+            }
+            catch(error){
+                console.log("Error fetching movie details",error);
+            }
+        }
+        fetchmoviedetails();
     },[movie.id])
 
     return(
