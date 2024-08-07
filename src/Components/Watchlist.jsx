@@ -10,6 +10,7 @@ export default function Watchlist(){
     const [genres,setGenres]=useState([ALL_GENRES]);
     const [selectedGenre,setSelectedGenre]=useState([ALL_GENRES]);
     const [search,setSearch] = useState("");
+    const [debouncesearch,setdebouncesearch]=useState("");
 
     useEffect(()=>{
         const genreslist=movies.map((movieobj)=>{
@@ -33,6 +34,23 @@ export default function Watchlist(){
         setWatchList(sortedmovies);
     }
     
+    function debouncedfxn(fxn,delay){
+        let timerid;
+        return function(...args){
+            clearTimeout(timerid);
+            timerid = setTimeout(()=>{
+                fxn(...args)
+            },delay)
+        }
+    }
+
+    const debouncesetsearch=debouncedfxn(setdebouncesearch,2000);
+
+    const handleInputChange=(e)=>{
+        setSearch(e.target.value);
+        debouncesetsearch(e.target.value);
+    }
+
     return(
         <div className="flex flex-col items-center justify-center">
 
@@ -52,7 +70,7 @@ export default function Watchlist(){
         <input value={search} 
         placeholder="Search..." 
         className="rounded-lg h-[2.5rem] p-4 w-[24rem] my-8 text-2xl bg-slate-200 outline-none"
-        onChange={(e)=>{return setSearch(e.target.value)}}
+        onChange={handleInputChange}
         />
 
         <table className="border rounded-md overflow-hidden w-[90%]">
@@ -86,7 +104,7 @@ export default function Watchlist(){
                         return selectedGenre===GENRE_ID_MAPPING[movie.genre_ids[0]]
                     })
                     .filter((movie)=>{
-                        return movie.title.toLowerCase().includes(search.toLowerCase())
+                        return movie.title.toLowerCase().includes(debouncesearch.toLowerCase())
                     })
                     .map((movie)=>{
                         return(
