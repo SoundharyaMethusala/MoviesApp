@@ -1,34 +1,30 @@
-import { useState,useEffect } from "react";
+import { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
-import axios from 'axios';
 import Pagination from "./Pagination";
 import MovieCard from "./MovieCard";
-import MovieContext from "../Context/MovieContext";
 import { useContext } from "react";
-import PaginationContext from "../Context/PaginationContext";
+import {useSelector,useDispatch} from "react-redux"
+import MovieContext from "../Context/MovieContext";
+import movieMiddleware from "../redux/Movie/movieMiddleware";
+
 
 export default function Movies(){
-    const [movies,setMovies]=useState(null);
+    const {movies,loading,error} = useSelector((store)=>store.movieState)
+    const dispatch=useDispatch();
     
     const {watchlist}=useContext(MovieContext)
-    const {pageno} = useContext(PaginationContext)
+    const {pageno}=useSelector((store)=>store.paginationState);
 
     useEffect(()=>{
-        const fetchmovies=async()=>{
-            try{
-                const movie=await axios.get(`https://api.themoviedb.org/3/trending/movie/day?api_key=48cc502104e3a8214004e2d847b4ea0b&page=${pageno}`)
-                setMovies(movie.data.results)
-            }
-            catch(error){
-                console.log("Error fetching trending movies",error);
-            }
-        }
-        fetchmovies();
-        
+        dispatch(movieMiddleware(pageno));
     },[pageno]);
-
-    if(!movies){
+    
+    if(loading){
         return <h1>...Loading</h1>
+    }
+
+    if(error){
+        return <h1>Oops!!Error occurred..</h1>
     }
     
     return(
