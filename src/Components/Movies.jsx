@@ -7,6 +7,10 @@ import {useSelector,useDispatch} from "react-redux"
 import MovieContext from "../Context/MovieContext";
 import movieMiddleware from "../redux/Movie/movieMiddleware";
 
+import ShimmerMovieCard from "./ShimmerMovieCard";
+import { ShimmerTitle } from "react-shimmer-effects";
+
+
 
 export default function Movies(){
     const {movies,loading,error} = useSelector((store)=>store.movieState)
@@ -20,7 +24,16 @@ export default function Movies(){
     },[pageno]);
     
     if(loading){
-        return <h1>...Loading</h1>
+      return(
+                <>
+                    <ShimmerTitle line={1} className="m-12 ml-[40rem] w-[30rem]"></ShimmerTitle>
+                    <div className="flex flex-wrap justify-evenly">
+                    {Array.from({ length: 20 }).map((_, index) => (
+                        <ShimmerMovieCard key={index} />
+                    ))}
+                    </div>                    
+                </>
+            )
     }
 
     if(error){
