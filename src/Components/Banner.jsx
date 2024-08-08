@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {BASE_URL} from '../utils/constants'
+import ShimmerBanner from './ShimmerBanner';
 
 export default function Banner(){
     const [trendingmovie,setTrendingMovie]=useState(null);
@@ -20,7 +21,7 @@ export default function Banner(){
     },[]);
 
     if(!trendingmovie){
-        return <h1>...Loading</h1>
+        return <ShimmerBanner></ShimmerBanner>
     }
 
     return(

@@ -12,6 +12,7 @@ import { ShimmerTitle } from "react-shimmer-effects";
 
 
 
+
 export default function Movies(){
     const {movies,loading,error} = useSelector((store)=>store.movieState)
     const dispatch=useDispatch();
